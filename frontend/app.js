@@ -28,6 +28,59 @@ function removeTyping() {
   if (el) el.remove();
 }
 
+/* =========================
+   🎤 Speech Recognition
+   ========================= */
+
+let recognition;
+let isListening = false;
+
+function startListening() {
+  if (isListening) return;
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert("Speech recognition not supported in this browser");
+    return;
+  }
+
+  isListening = true;
+
+  recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+
+  showListening();
+
+  recognition.onresult = function (event) {
+    const transcript = event.results[0][0].transcript;
+
+    document.getElementById("user-input").value = transcript;
+    sendMessage();
+  };
+
+  recognition.onerror = function (event) {
+    console.error(event.error);
+    isListening = false;
+  };
+
+  recognition.onend = function () {
+    isListening = false;
+  };
+
+  recognition.start();
+}
+
+function showListening() {
+  addMessage("🎤 Listening...", "horace");
+}
+
+/* =========================
+   🚀 Chat Flow
+   ========================= */
+
 async function loadFirstQuestion() {
   const res = await fetch(`${API}/question`);
   const data = await res.json();
@@ -49,18 +102,23 @@ async function sendMessage() {
   const res = await fetch(`${API}/answer`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text })
+    body: JSON.stringify({ text }),
   });
 
   const data = await res.json();
 
   removeTyping();
 
+  const formattedScore = data.similarity_score
+    ? Math.round(data.similarity_score * 100)
+    : 0;
+
   setTimeout(() => {
     if (data.model_answer) {
-        addMessage(data.model_answer, "horace");
-        addMessage(`Similarity score: ${data.similarity_score}`, "horace");
+      addMessage(data.model_answer, "horace");
+      addMessage(`Similarity score: ${formattedScore}%`, "horace");
     }
+
     if (data.next_question) {
       addMessage(data.next_question, "horace");
     } else {
