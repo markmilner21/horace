@@ -1,4 +1,4 @@
-from horace.prompts import QUESTIONS
+from backend.prompts import QUESTIONS
 
 class HoraceEngine:
     def __init__(self):
