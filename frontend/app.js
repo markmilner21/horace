@@ -59,6 +59,7 @@ async function sendMessage() {
   setTimeout(() => {
     if (data.model_answer) {
         addMessage(data.model_answer, "horace");
+        addMessage(`Similarity score: ${data.similarity_score}`, "horace");
     }
     if (data.next_question) {
       addMessage(data.next_question, "horace");

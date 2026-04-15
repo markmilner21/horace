@@ -1,5 +1,6 @@
 from backend.prompts import QUESTIONS
 from backend.model_answers import MODEL_ANSWERS
+from backend.similarity import compute_similarity
 
 class HoraceEngine:
     def __init__(self):
@@ -13,19 +14,20 @@ class HoraceEngine:
         if self.has_next_question():
             return QUESTIONS[self.index]
         return None
-    
-    def get_model_answer(self):
-        i = self.index - 1
-        if 0 <= i < len(MODEL_ANSWERS):
-            return f"Model answer: {MODEL_ANSWERS[i]}"
-        return None
 
     def submit_answer(self, user_answer: str):
-        # store user answer (optional but useful later)
-        self.answers.append({
-            "question_index": self.index,
+        model_answer = MODEL_ANSWERS[self.index]
+
+        score = compute_similarity(user_answer, model_answer)
+
+        self.history.append({
+            "question": QUESTIONS[self.index],
             "user_answer": user_answer,
-            "model_answer": MODEL_ANSWERS[self.index] if self.index < len(MODEL_ANSWERS) else None
+            "model_answer": model_answer,
+            "similarity": score
         })
 
         self.index += 1
+
+        return score, model_answer
+    
