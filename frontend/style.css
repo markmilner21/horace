@@ -1,0 +1,41 @@
+body {
+  font-family: Arial;
+  background: #111;
+  color: white;
+}
+
+.chat-container {
+  width: 400px;
+  margin: auto;
+  margin-top: 50px;
+}
+
+#chat-box {
+  height: 500px;
+  overflow-y: auto;
+  border: 1px solid #333;
+  padding: 10px;
+}
+
+.message {
+  margin: 10px 0;
+}
+
+.horace {
+  color: #4fc3f7;
+}
+
+.user {
+  text-align: right;
+  color: #81c784;
+}
+
+.input-area {
+  display: flex;
+  margin-top: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+}
