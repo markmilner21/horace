@@ -15,10 +15,9 @@ class HoraceEngine:
         return None
     
     def get_model_answer(self):
-        # returns the “Horace truth response”
         i = self.index - 1
         if 0 <= i < len(MODEL_ANSWERS):
-            return MODEL_ANSWERS[i]
+            return f"Model answer: {MODEL_ANSWERS[i]}"
         return None
 
     def submit_answer(self, user_answer: str):
