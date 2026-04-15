@@ -4,7 +4,7 @@ from backend.similarity import compute_similarity
 
 class HoraceEngine:
     def __init__(self):
-        self.answers = []
+        self.history = []
         self.index = 0
 
     def has_next_question(self):
