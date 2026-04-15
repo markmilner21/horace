@@ -5,10 +5,27 @@ function addMessage(text, sender) {
 
   const div = document.createElement("div");
   div.className = `message ${sender}`;
-  div.innerText = `${sender}: ${text}`;
+  div.innerText = text;
 
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
+}
+
+function showTyping() {
+  const box = document.getElementById("chat-box");
+
+  const div = document.createElement("div");
+  div.className = "message horace typing";
+  div.id = "typing";
+  div.innerText = "Horace is typing...";
+
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById("typing");
+  if (el) el.remove();
 }
 
 async function loadFirstQuestion() {
@@ -20,12 +37,14 @@ async function loadFirstQuestion() {
 
 async function sendMessage() {
   const input = document.getElementById("user-input");
-  const text = input.value;
+  const text = input.value.trim();
 
   if (!text) return;
 
   addMessage(text, "user");
   input.value = "";
+
+  showTyping();
 
   const res = await fetch(`${API}/answer`, {
     method: "POST",
@@ -35,11 +54,15 @@ async function sendMessage() {
 
   const data = await res.json();
 
-  if (data.next_question) {
-    addMessage(data.next_question, "horace");
-  } else {
-    addMessage("Interview complete.", "horace");
-  }
+  removeTyping();
+
+  setTimeout(() => {
+    if (data.next_question) {
+      addMessage(data.next_question, "horace");
+    } else {
+      addMessage("Interview complete.", "horace");
+    }
+  }, 400);
 }
 
 loadFirstQuestion();
