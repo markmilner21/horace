@@ -109,21 +109,33 @@ async function sendMessage() {
 
   removeTyping();
 
-  const formattedScore = data.similarity_score
-    ? Math.round(data.similarity_score * 100)
-    : 0;
+  const finalScore = data.final_score
+  ? Math.round(data.final_score * 100)
+  : 0;
 
-  setTimeout(() => {
+  const contentScore = data.content_score
+  ? Math.round(data.content_score * 100)
+  : 0;
+
+  const brevityScore = data.brevity_score
+  ? Math.round(data.brevity_score * 100)
+  : 0;
+
+    setTimeout(() => {
     if (data.model_answer) {
-      addMessage(data.model_answer, "horace");
-      addMessage(`Similarity score: ${formattedScore}%`, "horace");
+        addMessage(data.model_answer, "horace");
+        addMessage(`Overall score: ${finalScore}%`, "horace");
+        addMessage(
+        `Content: ${contentScore}% | Brevity: ${brevityScore}%`,
+        "horace"
+        );
     }
 
     if (data.next_question) {
-      addMessage(data.next_question, "horace");
+        addMessage(data.next_question, "horace");
     } else {
-      addMessage("Interview complete.", "horace");
-    }
+        addMessage("Interview complete.", "horace");
+  }
   }, 400);
 }
 
