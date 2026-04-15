@@ -1,8 +1,21 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from backend.engine import HoraceEngine
 
 app = FastAPI()
+
+# CORS (for safety, mostly needed if frontend not served from same origin)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# API first (important for clarity)
 horace = HoraceEngine()
 
 class Message(BaseModel):
@@ -24,3 +37,7 @@ def send_answer(msg: Message):
         "next_question": next_q,
         "done": next_q is None
     }
+
+
+# Frontend LAST
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
