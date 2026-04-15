@@ -2,6 +2,7 @@ from backend.prompts import QUESTIONS
 from backend.model_answers import MODEL_ANSWERS
 from backend.similarity import compute_similarity
 from backend.brevity import brevity_score
+from backend.style import style_score
 
 class HoraceEngine:
     def __init__(self):
@@ -19,22 +20,27 @@ class HoraceEngine:
     def submit_answer(self, user_answer: str):
         model_answer = MODEL_ANSWERS[self.index]
 
-        content_score = compute_similarity(user_answer, model_answer)
+        content = compute_similarity(user_answer, model_answer)
         brevity = brevity_score(user_answer, model_answer)
+        style = style_score(user_answer, model_answer)
 
-        # combine (simple weighted average for now)
-        final_score = (0.7 * content_score) + (0.3 * brevity)
+        final_score = (
+            0.5 * content +
+            0.2 * brevity +
+            0.3 * style
+        )
 
         self.history.append({
             "question": QUESTIONS[self.index],
             "user_answer": user_answer,
             "model_answer": model_answer,
-            "content_score": content_score,
+            "content_score": content,
             "brevity_score": brevity,
+            "style_score": style,
             "final_score": final_score
         })
 
         self.index += 1
 
-        return final_score, model_answer, content_score, brevity
+        return final_score, model_answer, content, brevity, style
     

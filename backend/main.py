@@ -28,14 +28,17 @@ def get_question():
 
 @app.post("/answer")
 def send_answer(msg: Message):
-    final_score, model_answer, content_score, brevity = horace.submit_answer(msg.text)
+
+    final, model_answer, content, brevity, style = horace.submit_answer(msg.text)
+
     next_q = horace.get_next_question()
 
     return {
         "model_answer": model_answer,
-        "final_score": final_score,
-        "content_score": content_score,
+        "final_score": final,
+        "content_score": content,
         "brevity_score": brevity,
+        "style_score": style,
         "next_question": next_q,
         "done": next_q is None
     }

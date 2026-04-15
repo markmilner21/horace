@@ -121,13 +121,18 @@ async function sendMessage() {
   ? Math.round(data.brevity_score * 100)
   : 0;
 
+  const styleScore =
+  data.style_score !== undefined
+    ? Math.round(data.style_score * 100)
+    : 0;
+
     setTimeout(() => {
     if (data.model_answer) {
         addMessage(data.model_answer, "horace");
         addMessage(`Overall score: ${finalScore}%`, "horace");
         addMessage(
-        `Content: ${contentScore}% | Brevity: ${brevityScore}%`,
-        "horace"
+            `Content: ${contentScore}% | Brevity: ${brevityScore}% | Style: ${styleScore}%`,
+            "horace"
         );
     }
 
