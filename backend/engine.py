@@ -1,7 +1,7 @@
 from backend.prompts import QUESTIONS
 from backend.model_answers import MODEL_ANSWERS
 from backend.similarity import compute_similarity
-from backend.scoring import brevity_score
+from backend.brevity import brevity_score
 
 class HoraceEngine:
     def __init__(self):
