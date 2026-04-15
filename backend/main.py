@@ -1,23 +1,26 @@
-from horace.engine import HoraceEngine
+from fastapi import FastAPI
+from pydantic import BaseModel
+from backend.engine import HoraceEngine
 
-def run():
-    horace = HoraceEngine()
+app = FastAPI()
+horace = HoraceEngine()
 
-    print("=== Horace Interview Started ===\n")
+class Message(BaseModel):
+    text: str
 
-    while horace.has_next_question():
-        question = horace.get_next_question()
-        print(f"Horace: {question}")
 
-        answer = input("You: ")
-        horace.submit_answer(answer)
+@app.get("/question")
+def get_question():
+    return {"question": horace.get_next_question()}
 
-        print("")  # spacing
 
-    print("=== Interview Complete ===")
-    print("Your answers:")
-    for i, a in enumerate(horace.answers, 1):
-        print(f"{i}. {a}")
+@app.post("/answer")
+def send_answer(msg: Message):
+    horace.submit_answer(msg.text)
 
-if __name__ == "__main__":
-    run()
+    next_q = horace.get_next_question()
+
+    return {
+        "next_question": next_q,
+        "done": next_q is None
+    }
