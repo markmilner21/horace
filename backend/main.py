@@ -31,9 +31,11 @@ def get_question():
 def send_answer(msg: Message):
     horace.submit_answer(msg.text)
 
+    model_answer = horace.get_model_answer()
     next_q = horace.get_next_question()
 
     return {
+        "model_answer": model_answer,
         "next_question": next_q,
         "done": next_q is None
     }

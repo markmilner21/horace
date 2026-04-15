@@ -57,6 +57,9 @@ async function sendMessage() {
   removeTyping();
 
   setTimeout(() => {
+    if (data.model_answer) {
+        addMessage(data.model_answer, "horace");
+    }
     if (data.next_question) {
       addMessage(data.next_question, "horace");
     } else {
